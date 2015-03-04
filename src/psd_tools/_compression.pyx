@@ -17,6 +17,8 @@ def _delta_decode(arr, int mod, int w, int h):
 
 
 cdef _delta_decode_bytes(unsigned char[:] arr, int w, int h):
+    if len(arr) < w*h:
+        raise ValueError("Out of bounds")
     cdef int x, y, pos, offset
     for y in range(h):
         offset = y*w
@@ -25,6 +27,8 @@ cdef _delta_decode_bytes(unsigned char[:] arr, int w, int h):
             arr[pos+1] += arr[pos]
 
 cdef _delta_decode_words(unsigned short[:] arr, int w, int h):
+    if len(arr) < w*h:
+        raise ValueError("Out of bounds")
     cdef int x, y, pos, offset
     for y in range(h):
         offset = y*w
@@ -34,6 +38,8 @@ cdef _delta_decode_words(unsigned short[:] arr, int w, int h):
 
 
 def _restore_byte_order(bytes_array, int w, int h):
+    if len(bytes_array) < w*h*4:
+        raise ValueError("Out of bounds")
     cdef bytes_copy = bytes_array[:]
     cdef unsigned char [:] src = bytes_array, dst = bytes_copy
     cdef int i = 0
